@@ -130,7 +130,7 @@ _G.get_label = function(absnum, relnum)
   end
 end
 
-function update_status_column()
+local function update_status_column()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
     local buftype = vim.bo[buf].buftype
@@ -149,7 +149,7 @@ function update_status_column()
         vim.wo[win].numberwidth = width
 
         if enabled then
-            vim.opt.statuscolumn = '%=%s%=%{v:virtnum > 0 ? "" : v:lua.get_label(v:lnum, v:relnum)} '
+            vim.opt.statuscolumn = '%=%s%=%{v:relnum == 0 ? "" : v:relnum}%{v:virtnum > 0 ? "" : v:lua.get_label(v:lnum, v:relnum)} '
         else
             vim.opt.statuscolumn = M.config.default_statuscolumn
         end
@@ -187,7 +187,7 @@ function M.disable_line_numbers()
   update_status_column()
 end
 
-function create_auto_commands()
+local function create_auto_commands()
   local group = vim.api.nvim_create_augroup("ComfyLineNumbers", { clear = true })
 
   vim.api.nvim_create_autocmd({ "WinNew", "BufWinEnter", "BufEnter", "TermOpen", "InsertEnter", "InsertLeave" }, {
